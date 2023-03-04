@@ -46,7 +46,7 @@ def displayImage():  # Retrieving uploaded file path from session
 
 def cartoonify(image):
   originalImage = cv2.imread(image)
-  originalImage = cv2.resize(originalImage, (960,540))
+  originalImage = cv2.resize(originalImage, (640,480))
   grayScaleImage = cv2.cvtColor(originalImage, cv2.COLOR_BGR2GRAY)
   smoothGrayScale = cv2.medianBlur(grayScaleImage, 5)
   getEdge = cv2.adaptiveThreshold(smoothGrayScale, 255,
