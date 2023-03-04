@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response, request, session
 from werkzeug.utils import secure_filename
 import os
 import cv2
+import numpy as np
 
 UPLOAD_FOLDER = os.path.join('staticFiles', 'uploads')
 
@@ -44,32 +45,28 @@ def displayImage():  # Retrieving uploaded file path from session
 
 
 def cartoonify(image):
-  originalmage = cv2.imread(image)
-  originalmage = cv2.cvtColor(originalmage, cv2.COLOR_BGR2RGB)
-
-  ReSized1 = cv2.resize(originalmage, (960, 540))
-
-  grayScaleImage = cv2.cvtColor(originalmage, cv2.COLOR_BGR2GRAY)
-  ReSized2 = cv2.resize(grayScaleImage, (960, 540))
-
+  originalImage = cv2.imread(image)
+  originalImage = cv2.resize(originalImage, (960,540))
+  grayScaleImage = cv2.cvtColor(originalImage, cv2.COLOR_BGR2GRAY)
   smoothGrayScale = cv2.medianBlur(grayScaleImage, 5)
-  ReSized3 = cv2.resize(smoothGrayScale, (960, 540))
-
   getEdge = cv2.adaptiveThreshold(smoothGrayScale, 255,
                                   cv2.ADAPTIVE_THRESH_MEAN_C,
                                   cv2.THRESH_BINARY, 9, 9)
-
-  ReSized4 = cv2.resize(getEdge, (960, 540))
-
-  colorImage = cv2.bilateralFilter(originalmage, 9, 300, 300)
-  ReSized5 = cv2.resize(colorImage, (960, 540))
-
+  
+  data = np.float32(originalImage).reshape((-1,3))
+  criteria = (cv2.TERM_CRITERIA_EPS+ cv2.TERM_CRITERIA_MAX_ITER, 20, 0.001)
+  ret, label, center = cv2.kmeans(data, 4, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+  center = np.uint8(center)
+  result=center[label.flatten()]
+  result = result.reshape(originalImage.shape)
+  
+  colorImage = cv2.bilateralFilter(result, 9, 300, 300)
+ 
   cartoonImage = cv2.bitwise_and(colorImage, colorImage, mask=getEdge)
 
   ReSized6 = cv2.resize(cartoonImage, (960, 540))
-  images = [ReSized1, ReSized2, ReSized3, ReSized4, ReSized5, ReSized6]
   return ReSized6
 
 
 if __name__=='__main__':
-  app.run(host='127.0.0.0', port=8080, debug=True)
+  app.run(host='127.0.0.0', port=8888, debug=True)
