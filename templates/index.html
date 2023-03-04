@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Page Title</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="">
+<style>
+html,body {font-family:"Verdana",sans-serif}
+h1,h2,h3,h4,h5,h6 {font-family:"Segoe UI",sans-serif}
+</style>
+  
+<script src=""></script>
+<body>
+
+<h1>Cartoonify your image.</h1>
+
+<div>
+ <form method="POST" enctype="multipart/form-data">
+        <input type="file" id="myFile" name="uploaded-file" accept="image/*">
+        <input type="submit" value="Submit" />
+</form>
+   <form action="/show_image" target="_blank">
+           <input type="submit" value="Display Image" />
+ </form>
+</body>
+</html>
