@@ -5,6 +5,8 @@ import cv2
 
 UPLOAD_FOLDER = os.path.join('staticFiles', 'uploads')
 
+if not os.path.exists('staticFiles'):
+    os.makedirs('staticFiles')
 app = Flask(__name__, template_folder='templates', static_folder='staticFiles/')
 app.config['UPLOAD_FOLDER'] = 'staticFiles/'
 app.secret_key = 'MLS-Cartoonify-App'
